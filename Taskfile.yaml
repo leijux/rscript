@@ -1,0 +1,29 @@
+version: "3"
+
+env:
+  VERSION: v0.0.1
+
+tasks:
+  build:
+    deps: [ build_wails ,build_cmd ]
+
+  test:
+    cmds:
+      - go test -timeout 30s
+
+  build_wails:
+    cmds:
+      - pwsh ./script/wailsBuild.ps1
+
+  build_cmd:
+    cmds:
+      - pwsh ./script/build.ps1
+
+  wails_dev:
+    cmds:
+      - wails dev -tags gui
+
+  build_update_package:
+    cmds:
+      - Set-Location ./internal/app/package
+      - go build -ldflags "-s -w" -o upgrade.exe

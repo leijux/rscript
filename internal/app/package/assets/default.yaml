@@ -1,0 +1,14 @@
+schema_version: 1
+
+variables:
+  update_package_name: example.zip
+
+commands:
+  - internal.uploadFile ./{{update_package_name}} {{update_package_name}}
+
+default:
+  username: root
+  password: 123456
+
+remotes:
+  - { ip: 192.168.0.1:22 }

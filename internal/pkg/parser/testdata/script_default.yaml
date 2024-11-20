@@ -1,0 +1,21 @@
+schema_version: 1
+
+variables:
+  path: /example
+  update_package_name: example.zip
+
+commands:
+  - internal.uploadFile ./{{update_package_name}} ~/
+  - systemctl stop example
+  - rm -rf {{path}}/*
+  - unzip -o ./{{update_package_name}} -d {{path}}
+  - systemctl start example
+  - rm -rf ./{{update_package_name}}
+
+default:
+  port: 22
+  username: root
+  password: 123456
+
+remotes:
+  - { ip: 192.168.0.1 }

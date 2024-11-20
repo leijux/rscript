@@ -1,0 +1,16 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "rscript",
+  "outputfilename": "rscript_v0.0.1",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "leiju",
+    "email": "leijuxx@outlook.com"
+  },
+  "info": {
+    "productVersion": "v0.0.1"
+  }
+}

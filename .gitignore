@@ -1,0 +1,9 @@
+.idea
+.vscode
+
+build
+logs
+
+frontend/node_modules
+frontend/dist
+

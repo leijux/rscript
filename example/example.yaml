@@ -1,0 +1,28 @@
+schema_version: 1
+
+variables:
+  update_path: /example
+  update_package_name: example.zip
+
+# rscript internal command
+# rscript.uploadFile {local_path} {remote_path}
+# rscript.downloadFile {remote_path} {loacl_path}
+# rscript.exec {local command}
+commands:
+  - rscript.uploadFile ./package/{{update_package_name}} {{update_package_name}}
+  # linux shell command
+  - systemctl stop example
+  - rm -rf {{update_path}}/*
+  - unzip -q -o ~/{{update_package_name}} -d {{update_path}}
+  - systemctl start example
+  - rm -rf ./{{update_package_name}}
+
+# default ssh username and password
+default:
+  username: root
+  password: 123456
+
+remotes:
+  - { ip: 192.168.7.201 }
+  - { ip: 192.168.7.200:9099, username: leijux, password: bbb }
+  - { ip: localhost }
