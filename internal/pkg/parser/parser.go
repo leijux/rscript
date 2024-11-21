@@ -73,14 +73,14 @@ func validateConfig(script *RScript) (err error) {
 	for i, r := range script.Remotes {
 		if r.Username == "" {
 			if dUser == "" {
-				return errors.New("no username found")
+				return fmt.Errorf("remote %s username can't be empty", r.AddrStr)
 			}
 			r.Username = dUser
 		}
 
 		if r.Password == "" {
 			if dPass == "" {
-				return errors.New("no password found")
+				return fmt.Errorf("remote %s password can't be empty", r.AddrStr)
 			}
 			r.Password = dPass
 		}
@@ -88,12 +88,12 @@ func validateConfig(script *RScript) (err error) {
 		addrPort, err := netip.ParseAddrPort(r.AddrStr)
 		if err != nil { //如果解析失败 尝试解析地址加端口
 			if dPort == 0 { //端口不能为空
-				return errors.New("no port found")
+				return fmt.Errorf("remote %s port can't be empty", r.AddrStr)
 			}
 
 			addr, err := netip.ParseAddr(r.AddrStr)
 			if err != nil { // 解析地址失败
-				return err
+				return fmt.Errorf("remote %s parse addr err: %w", r.AddrStr, err)
 			}
 			// 地址加端口
 			addrPort = netip.AddrPortFrom(addr, dPort)
