@@ -42,7 +42,7 @@ func NewProgressPage() progressPage {
 var _ pager = (*progressPage)(nil)
 
 func (p progressPage) Init(m model) tea.Cmd {
-	return nil
+	return tea.WindowSize()
 }
 
 func (p progressPage) Update(m *model, msg tea.Msg) tea.Cmd {
