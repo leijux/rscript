@@ -38,7 +38,7 @@ func (a *App) SetConfigPath() string {
 	filepath, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
 		DefaultDirectory: "./",
 		DefaultFilename:  "default.yaml",
-		Title:            "选择执行的脚本",
+		Title:            "select a script",
 		Filters: []runtime.FileFilter{
 			{
 				DisplayName: "script",
