@@ -22,7 +22,7 @@ step 2: internal/app/package 编写脚本
 
 step 3: 编译包 go build -ldflags "-s -w" -o example.exe
 
-### 为什么会诞生这个项目？
+## 为什么会诞生这个项目？
 
 apt、docker 等是更好的解决方案，但有时程序可能部署在边缘场景下（有限的资源，无网络，甚至只能点对点访问）
 
