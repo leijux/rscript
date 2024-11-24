@@ -17,7 +17,7 @@ type SSHConfig struct {
 	addr netip.AddrPort
 }
 
-// Connect establishes an SSH connection
+// connect establishes an SSH connection
 func (s SSHConfig) connect() (*ssh.Client, error) {
 	if s.addr.Addr().IsLoopback() {
 		return nil, nil

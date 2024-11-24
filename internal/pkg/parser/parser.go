@@ -86,15 +86,17 @@ func validateConfig(script *RScript) (err error) {
 		}
 
 		addrPort, err := netip.ParseAddrPort(r.AddrStr)
-		if err != nil { //如果解析失败 尝试解析地址加端口
-			if dPort == 0 { //端口不能为空
-				return fmt.Errorf("remote %s port can't be empty", r.AddrStr)
-			}
-
+		if err != nil { //如果解析失败 尝试解析地址
 			addr, err := netip.ParseAddr(r.AddrStr)
 			if err != nil { // 解析地址失败
 				return fmt.Errorf("remote %s parse addr err: %w", r.AddrStr, err)
 			}
+
+			if dPort == 0 {
+				// return fmt.Errorf("remote %s port can't be empty", r.AddrStr)
+				dPort = 22
+			}
+
 			// 地址加端口
 			addrPort = netip.AddrPortFrom(addr, dPort)
 		}
@@ -115,14 +117,14 @@ func validateConfig(script *RScript) (err error) {
 }
 
 func ParseWithBytes(fileData []byte) (*RScript, error) {
-	diskConf := yobj{}
+	diskScript := yobj{}
 
-	err := yaml.Unmarshal(fileData, &diskConf)
+	err := yaml.Unmarshal(fileData, &diskScript)
 	if err != nil {
 		return nil, err
 	}
 
-	es, ok, err := fieldVal[map[string]any](diskConf, "variables")
+	es, ok, err := fieldVal[map[string]any](diskScript, "variables")
 
 	if ok && len(es) != 0 && err == nil {
 		t := fasttemplate.New(string(fileData), "{{", "}}")
@@ -130,21 +132,21 @@ func ParseWithBytes(fileData []byte) (*RScript, error) {
 		fileData = []byte(t.ExecuteString(es))
 	}
 
-	config := &RScript{
+	script := &RScript{
 		SchemaVersion: 0,
 	}
 
-	err = yaml.Unmarshal(fileData, &config)
+	err = yaml.Unmarshal(fileData, &script)
 	if err != nil {
 		return nil, err
 	}
 
-	err = validateConfig(config)
+	err = validateConfig(script)
 	if err != nil {
 		return nil, err
 	}
 
-	return config, nil
+	return script, nil
 }
 
 func ParseWithPath(path string) (*RScript, error) {
