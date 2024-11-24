@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"os/exec"
 	"strings"
@@ -17,7 +18,7 @@ const prefix = "rscript"
 type internalFunc func(*ssh.Client, ...string) (string, error)
 
 var internalFuncMap = map[string]internalFunc{
-	prefix + ".uploadFile":   uploadFile,
+	prefix + ".uploadFile":   UploadFileWithFs(nil),
 	prefix + ".downloadFile": downloadFile,
 	prefix + ".exec":         execLocalCommand,
 }
@@ -68,45 +69,57 @@ func downloadFile(client *ssh.Client, args ...string) (string, error) {
 	return "", nil
 }
 
-func uploadFile(client *ssh.Client, args ...string) (string, error) {
-	if len(args) != 2 {
-		return "", errors.New("args error")
-	}
-	var (
-		localFilePath  = args[0]
-		remoteFilePath = args[1]
-	)
-	if localFilePath == "" {
-		return "", errors.New("local file path is empty")
-	}
-	if remoteFilePath == "" {
-		return "", errors.New("remote file path is empty")
-	}
+func UploadFileWithFs(f fs.FS) internalFunc {
+	return func(client *ssh.Client, args ...string) (string, error) {
+		if len(args) != 2 {
+			return "", errors.New("args error")
+		}
+		var (
+			localFilePath  = args[0]
+			remoteFilePath = args[1]
+		)
+		if localFilePath == "" {
+			return "", errors.New("local file path is empty")
+		}
+		if remoteFilePath == "" {
+			return "", errors.New("remote file path is empty")
+		}
 
-	sftpClient, err := sftp.NewClient(client)
-	if err != nil {
-		return "", fmt.Errorf("sftp.NewClient: %w", err)
-	}
-	defer sftpClient.Close()
+		sftpClient, err := sftp.NewClient(client)
+		if err != nil {
+			return "", fmt.Errorf("sftp.NewClient: %w", err)
+		}
+		defer sftpClient.Close()
 
-	localFile, err := os.Open(localFilePath)
-	if err != nil {
-		return "", fmt.Errorf("os.Open: %w", err)
-	}
-	defer localFile.Close()
+		var localFile fs.File
 
-	remoteFile, err := sftpClient.Create(remoteFilePath)
-	if err != nil {
-		return "", fmt.Errorf("sftpClient.Create: %w", err)
-	}
-	defer remoteFile.Close()
+		if f == nil {
+			localFile, err = os.Open(localFilePath)
+			if err != nil {
+				return "", fmt.Errorf("os.Open: %w", err)
+			}
+		} else {
+			localFile, err = f.Open(localFilePath)
+			if err != nil {
+				return "", fmt.Errorf("f.Open: %w", err)
+			}
+		}
 
-	_, err = io.Copy(remoteFile, localFile)
-	if err != nil {
-		return "", fmt.Errorf("io.Copy: %w", err)
-	}
+		defer localFile.Close()
 
-	return "", nil
+		remoteFile, err := sftpClient.Create(remoteFilePath)
+		if err != nil {
+			return "", fmt.Errorf("sftpClient.Create: %w", err)
+		}
+		defer remoteFile.Close()
+
+		_, err = io.Copy(remoteFile, localFile)
+		if err != nil {
+			return "", fmt.Errorf("io.Copy: %w", err)
+		}
+
+		return "", nil
+	}
 }
 
 func execLocalCommand(_ *ssh.Client, args ...string) (string, error) {
@@ -114,6 +127,7 @@ func execLocalCommand(_ *ssh.Client, args ...string) (string, error) {
 		name    string
 		cmdArgs []string
 	)
+
 	switch len(args) {
 	case 0:
 		return "", errors.New("args error")
@@ -123,6 +137,7 @@ func execLocalCommand(_ *ssh.Client, args ...string) (string, error) {
 		name = args[0]
 		cmdArgs = append(cmdArgs, args[1:]...)
 	}
+
 	cmd := exec.Command(name, cmdArgs...)
 	var out strings.Builder
 	cmd.Stdout = &out
