@@ -18,11 +18,12 @@ commands:
   - rm -rf ./{{update_package_name}}
 
 # default ssh username and password
+# default port 22
 default:
   username: root
   password: 123456
 
 remotes:
-  - { ip: 192.168.7.201 }
   - { ip: 192.168.7.200:9099, username: leijux, password: bbb }
-  - { ip: localhost }
+  - { ip: 192.168.7.201 } #如果没有则使用default
+  - { ip: 127.0.0.1 } #如果是127.0.0.1 则命令在本地执行
