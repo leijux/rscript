@@ -3,7 +3,7 @@ $configPath = "./wails.json"
 $config = Get-Content $configPath | ConvertFrom-Json
 
 $config.info.productVersion = "$env:VERSION"
-$config.outputfilename = "$($config.name)_$env:VERSION"
+$config.outputfilename = "$($config.name)_gui_$env:VERSION"
 
 $config | ConvertTo-Json | Set-Content $configPath
 
