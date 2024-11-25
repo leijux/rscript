@@ -5,11 +5,11 @@ env:
 
 tasks:
   build:
-    deps: [ build_wails ,build_cmd ]
+    deps: [build_wails, build_cmd]
 
   test:
     cmds:
-      - go test -timeout 30s
+      - go test -v -timeout 30s ./...
 
   build_wails:
     cmds:
@@ -19,6 +19,10 @@ tasks:
     cmds:
       - pwsh ./script/build.ps1
 
+  build_frontend:
+    cmds:
+      - pwsh ./script/buildFrontend.ps1
+
   wails_dev:
     cmds:
       - wails dev -tags gui
@@ -26,4 +30,4 @@ tasks:
   build_update_package:
     cmds:
       - Set-Location ./internal/app/package
-      - go build -ldflags "-s -w" -o upgrade.exe
+      - go build -ldflags "-s -w" -o example.exe

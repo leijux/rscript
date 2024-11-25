@@ -20,6 +20,11 @@ jobs:
         with:
           go-version: "1.23"
 
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
       - name: Install Gox
         run: go install github.com/mitchellh/gox@latest
 
@@ -28,6 +33,9 @@ jobs:
 
       - name: Install Task
         uses: arduino/setup-task@v2
+
+      - name: Build Frontend
+        run: task build_frontend
 
       - name: Test
         shell: pwsh
