@@ -1,5 +1,7 @@
 # rscript
 
+[![Go](https://github.com/leijux/rscript/actions/workflows/go.yml/badge.svg?branch=main)](https://github.com/leijux/rscript/actions/workflows/go.yml)
+
 rscript 是一个通过 ssh 远程执行命令的工具，命令和 ssh 连接信息保存在 yaml 文件中，目的是简化边缘场景下的运维过程。
 
 <img alt="gui"  width="100%" src="images/gui_2.png"/>
