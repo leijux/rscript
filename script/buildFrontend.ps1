@@ -3,6 +3,6 @@ $ErrorActionPreference = "Stop"
 Set-Location ./frontend
 
 npm ci
-npm build
+npm run build
 
 Set-Location ../
