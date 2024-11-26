@@ -14,6 +14,6 @@ var assets embed.FS
 func main() {
 	err := gui.Main(assets)
 	if err != nil {
-		println("Error:", err.Error())
+		panic(err)
 	}
 }
