@@ -28,4 +28,4 @@ step 3: 编译包 go build -ldflags "-s -w" -o example.exe
 
 apt、docker 等是更好的解决方案，但有时程序可能部署在边缘场景下（有限的资源，无网络，甚至只能点对点访问）
 
-同时来源于一个需求，如何在 windows 中双击运行来安装或升级 linux 中的程序 ;-)
+同时来源于一个需求，如何在 windows 中双击鼠标来安装或升级 linux 中的程序 ;-)
