@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"log/slog"
 	"net/netip"
 
 	"github.com/alecthomas/kong"
@@ -30,11 +31,12 @@ func main() {
 	if ctx.Error != nil {
 		panic(ctx.Error)
 	}
+
 	// init log
-	logger, lumberjackLogger := log.InitLog()
+	logger, lumberjackLogger := log.InitLog(slog.LevelDebug)
 	defer lumberjackLogger.Close()
 
-	//从assets读取脚本文件
+	//read script file from the assets
 	scriptFile, err := assets.ReadFile("assets/default.yaml")
 	if err != nil {
 		panic(err)
@@ -55,7 +57,7 @@ func main() {
 		})
 	}
 
-	// 重写rscript.uploadFile 从assets上传文件
+	// Rewrite rscript.uploadFile to upload files from the assets.
 	engin.SetInternalFunc("rscript.uploadFile", engin.UploadFileWithFs(assets))
 
 	program := tview.NewProgram(nil)

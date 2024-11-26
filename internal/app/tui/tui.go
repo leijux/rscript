@@ -1,6 +1,7 @@
 package tui
 
 import (
+	"log/slog"
 	"os"
 
 	"github.com/leijux/rscript/internal/pkg/engin"
@@ -11,7 +12,7 @@ import (
 const defaultConfig = "./default.yaml"
 
 func Main() {
-	logger, lumberjackLogger := log.InitLog()
+	logger, lumberjackLogger := log.InitLog(slog.LevelError)
 	defer lumberjackLogger.Close()
 
 	var (

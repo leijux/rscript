@@ -14,7 +14,7 @@ import (
 )
 
 func Main(assets embed.FS) error {
-	logger, lumberjackLogger := log.InitLog()
+	logger, lumberjackLogger := log.InitLog(slog.LevelError)
 	defer lumberjackLogger.Close()
 
 	app := &App{}

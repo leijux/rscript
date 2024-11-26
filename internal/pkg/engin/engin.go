@@ -173,8 +173,8 @@ func execExternalCommand(client *ssh.Client, command string) (string, error) {
 		return "", err
 	}
 	defer session.Close()
-	output, err := session.CombinedOutput(command)
 
+	output, err := session.CombinedOutput(command)
 	return string(output), err
 }
 

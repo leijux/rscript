@@ -10,7 +10,7 @@ import (
 	"github.com/leijux/rscript/internal/pkg/version"
 )
 
-func InitLog() (*slog.Logger, *lumberjack.Logger) {
+func InitLog(level slog.Level) (*slog.Logger, *lumberjack.Logger) {
 	lumberjackLogger := &lumberjack.Logger{
 		Filename:   "./logs/rscript.log",
 		MaxSize:    100, // megabytes
@@ -20,10 +20,10 @@ func InitLog() (*slog.Logger, *lumberjack.Logger) {
 	}
 
 	zerologLogger := zerolog.New(lumberjackLogger)
-	logger := slog.New(slogzerolog.Option{Level: slog.LevelInfo, Logger: &zerologLogger}.NewZerologHandler()).
+	logger := slog.New(slogzerolog.Option{Level: level, Logger: &zerologLogger}.NewZerologHandler()).
 		With("version", version.Version)
 
 	slog.SetDefault(logger)
-	
+
 	return logger, lumberjackLogger
 }
